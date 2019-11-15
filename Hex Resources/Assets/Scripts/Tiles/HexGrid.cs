@@ -40,6 +40,8 @@ public class HexGrid : MonoBehaviour
 
     private HexCell currentPathFrom, currentPathTo;
 
+    public HexMapGenerator generator;
+
     [SerializeField]
     private bool currentPathExists;
 
@@ -70,13 +72,13 @@ public class HexGrid : MonoBehaviour
 
 	private void Awake()
 	{
-        //Shader.EnableKeyword("HEX_MAP_EDIT_MODE");
-		HexDefinition.noiseSource = noiseSource;
+        Shader.DisableKeyword("HEX_MAP_EDIT_MODE");
+        HexDefinition.noiseSource = noiseSource;
         HexDefinition.InitializeHashGrid(seed);
         HexUnit.unitPrefab = unitPrefab;
         cellShaderData = gameObject.AddComponent<HexCellShaderData>();
         cellShaderData.Grid = this;
-        CreateMap(cellCountX, cellCountZ, wrapping);
+        //CreateMap(cellCountX, cellCountZ, wrapping);
 	}
 
 	private void Start()
@@ -85,7 +87,8 @@ public class HexGrid : MonoBehaviour
 		sortedHexes = new List<HexCell>();
 		path = new List<HexCell>();
 		pathIndexes = new List<int>();
-	}
+        generator.GenerateMap(cellCountX, cellCountZ, wrapping);
+    }
 
 	private void OnEnable()
 	{

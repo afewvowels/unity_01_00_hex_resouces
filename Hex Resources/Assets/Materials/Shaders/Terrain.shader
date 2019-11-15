@@ -5,6 +5,7 @@
         _Color ("Color", Color) = (1,1,1,1)
         _MainTex ("Terrain Texture Array", 2DArray) = "white" {}
         _GridTex ("Grid Texture", 2D) = "white" {}
+        [NoScaleOffset] _HeightMap ("Heights", 2D) = "grey" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Specular ("Specular", Color) = (0.2, 0.2, 0.2)
         _BackgroundColor ("Background Color", Color) = (0, 0, 0)
@@ -34,15 +35,19 @@
 
         struct Input
         {
-			float4 color: COLOR;
+	        float4 color: COLOR;
             float3 worldPos;
             float3 terrain;
             float4 visibility;
+            float2 uv_HeightMap;
 
             #if defined(SHOW_MAP_DATA)
                 float mapData;
             #endif
         };
+        
+        sampler2D _HeightMap;
+        float4 _HeightMap_TexelSize;
 
         half _Glossiness;
         fixed3 _Specular;
@@ -98,6 +103,11 @@
                 grid = tex2D(_GridTex, gridUV);
             #endif
 
+            float2 heightUV = IN.worldPos.xz;
+            heightUV.x *= 1 / (4 * 8.66025404);
+            heightUV.y *= 1 / (2 * 15.0);
+            heightUV *= 0.45;
+
             float explored = IN.visibility.w;
             o.Albedo = c.rgb * grid * _Color * explored;
 
@@ -109,6 +119,7 @@
             o.Smoothness = _Glossiness;
             o.Occlusion = explored;
             o.Emission = _BackgroundColor * (1 - explored);
+            o.Normal = UnpackNormal (tex2D(_HeightMap, heightUV));
             o.Alpha = c.a;
         }
         ENDCG

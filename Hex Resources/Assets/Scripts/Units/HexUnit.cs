@@ -24,6 +24,8 @@ public class HexUnit : MonoBehaviour
 
     private const int visionRange = 3;
 
+    public string unitName;
+
     public int VisionRange
     {
         get

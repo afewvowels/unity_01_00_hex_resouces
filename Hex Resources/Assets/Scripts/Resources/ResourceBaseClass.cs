@@ -4,6 +4,4 @@ using UnityEngine;
 
 public class ResourceBaseClass : MonoBehaviour
 {
-    [SerializeField]
-    public int resourceID;
 }

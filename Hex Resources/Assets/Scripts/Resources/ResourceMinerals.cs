@@ -1,4 +1,4 @@
 ﻿public class ResourceMinerals : ResourceBaseClass
 {
-    private int resourceID = 1;
+    public int resourceID = 1;
 }

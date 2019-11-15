@@ -44,6 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3703fbbbe1f594ce59bf296e597e7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  location: {fileID: 0}
+  pathToTravel: []
+  unitName: Default
 --- !u!1 &8139185456134584223
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +105,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4714580b4333a4fb0835f84cccb26cee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
