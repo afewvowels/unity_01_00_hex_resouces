@@ -87,7 +87,7 @@ public class UnitsRoot : MonoBehaviour
         while(!isSet)
         {
             HexCell cell = grid.GetRandomHexCell();
-            if (!cell.IsUnderwater && !cell.Unit)
+            if (!cell.IsUnderwater && !cell.Unit && !cell.HasResource)
             {
                 grid.AddUnit(Instantiate(unit), cell, Random.Range(0.0f, 360.0f));
                 isSet = true;

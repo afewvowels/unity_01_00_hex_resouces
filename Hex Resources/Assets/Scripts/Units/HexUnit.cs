@@ -141,7 +141,7 @@ public class HexUnit : MonoBehaviour
 
     public bool IsValidDestination (HexCell cell)
     {
-        return !cell.IsUnderwater && !cell.Unit;
+        return !cell.IsUnderwater && !cell.Unit && !cell.HasResource;
     }
 
     public void Travel (List<HexCell> path)
