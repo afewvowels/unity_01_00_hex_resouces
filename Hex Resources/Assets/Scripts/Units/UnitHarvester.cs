@@ -174,7 +174,11 @@ public class UnitHarvester : HexUnit
     {
         foreach (HexCell neighbor in origin.GetNeighbors())
         {
-            if (neighbor.Resource || neighbor.Building)
+            if (neighbor.Resource && heldResources < maxHeldResources)
+            {
+                return neighbor;
+            }
+            else if (neighbor.Building && heldResources > 0)
             {
                 return neighbor;
             }
