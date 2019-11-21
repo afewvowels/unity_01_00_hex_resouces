@@ -717,8 +717,8 @@ public class HexGridChunk : MonoBehaviour
             Vector3 right, HexCell rightCell
             )
     {
-        Vector3 v4 = HexDefinition.TerraceLerp(begin, left, 1);
-        Vector3 v5 = HexDefinition.TerraceLerp(begin, right, 1);
+        Vector3 v3 = HexDefinition.TerraceLerp(begin, left, 1);
+        Vector3 v4 = HexDefinition.TerraceLerp(begin, right, 1);
         Color w3 = HexDefinition.TerraceLerp(weights1, weights2, 1);
         Color w4 = HexDefinition.TerraceLerp(weights1, weights3, 1);
 
@@ -727,26 +727,26 @@ public class HexGridChunk : MonoBehaviour
         indices.y = leftCell.Index;
         indices.z = rightCell.Index;
 
-        terrain.AddTriangle(begin, v4, v5);
+        terrain.AddTriangle(begin, v3, v4);
         terrain.AddTriangleCellData(indices, weights1, w3, w4);
 
         for (int i = 2; i < HexDefinition.terraceSteps; i++)
         {
-            Vector3 v1 = v4;
-            Vector3 v2 = v5;
+            Vector3 v1 = v3;
+            Vector3 v2 = v4;
             Color w1 = w3;
             Color w2 = w4;
 
-            v4 = HexDefinition.TerraceLerp(begin, left, i);
-            v5 = HexDefinition.TerraceLerp(begin, right, i);
+            v3 = HexDefinition.TerraceLerp(begin, left, i);
+            v4 = HexDefinition.TerraceLerp(begin, right, i);
             w3 = HexDefinition.TerraceLerp(weights1, weights2, i);
             w4 = HexDefinition.TerraceLerp(weights1, weights3, i);
 
-            terrain.AddQuad(v1, v2, v4, v5);
+            terrain.AddQuad(v1, v2, v3, v4);
             terrain.AddQuadCellData(indices, w1, w2, w3, w4);
         }
 
-        terrain.AddQuad(v4, v5, left, right);
+        terrain.AddQuad(v3, v4, left, right);
         terrain.AddQuadCellData(indices, w3, w4, weights2, weights3);
     }
 
@@ -759,6 +759,7 @@ public class HexGridChunk : MonoBehaviour
         float b = Mathf.Abs(1.0f / (float)(rightCell.Elevation - beginCell.Elevation));
 
         Vector3 boundary = Vector3.Lerp(HexDefinition.Displace(begin), HexDefinition.Displace(right), b);
+
         Color boundaryWeights = Color.Lerp(weights1, weights3, b);
         Vector3 indices;
         indices.x = beginCell.Index;
@@ -789,9 +790,9 @@ public class HexGridChunk : MonoBehaviour
         Vector3 boundary = Vector3.Lerp(HexDefinition.Displace(begin), HexDefinition.Displace(left), b);
         Color boundaryWeights = Color.Lerp(weights1, weights2, b);
         Vector3 indices;
-        indices.x = beginCell.TerrainTypeIndex;
-        indices.y = beginCell.TerrainTypeIndex;
-        indices.z = beginCell.TerrainTypeIndex;
+        indices.x = beginCell.Index;
+        indices.y = beginCell.Index;
+        indices.z = beginCell.Index;
 
         TriangulateBoundaryTriangle(right, weights3, begin, weights1, boundary, boundaryWeights, indices);
 

@@ -75,6 +75,7 @@ public class HexGrid : MonoBehaviour
 	private void Awake()
 	{
         Shader.DisableKeyword("HEX_MAP_EDIT_MODE");
+        //Shader.EnableKeyword("HEX_MAP_EDIT_MODE");
         HexDefinition.noiseSource = noiseSource;
         HexDefinition.InitializeHashGrid(seed);
         HexUnit.unitPrefab = unitPrefab;
