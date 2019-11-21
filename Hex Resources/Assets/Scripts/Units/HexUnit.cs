@@ -6,25 +6,59 @@ using UnityEngine;
 public class HexUnit : MonoBehaviour
 {
     [SerializeField]
-    private HexCell location;
+    protected int health = 100;
 
-    private HexCell currentTravelLocation;
+    public int unitID;
 
-    private float orientation;
+    [SerializeField]
+    protected HexCell location;
+
+    [SerializeField]
+    protected HexCell currentTravelLocation;
+
+    protected float orientation;
 
     public static HexUnit unitPrefab;
 
     [SerializeField]
-    private List<HexCell> pathToTravel;
+    protected List<HexCell> pathToTravel;
 
-    private const float travelSpeed = 4.0f;
-    private const float rotationSpeed = 180.0f;
+    protected const float travelSpeed = 4.0f;
+    protected const float rotationSpeed = 180.0f;
 
     public HexGrid Grid { get; set; }
 
-    private const int visionRange = 3;
+    protected const int visionRange = 3;
 
     public string unitName;
+
+    public int UnitID
+    {
+        get
+        {
+            return unitID;
+        }
+        private set
+        {
+            unitID = value;
+        }
+    }
+
+    public int Health
+    {
+        get
+        {
+            return health;
+        }
+        set
+        {
+            health -= value;
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+    }
 
     public int VisionRange
     {
@@ -34,7 +68,7 @@ public class HexUnit : MonoBehaviour
         }
     }
 
-    public HexCell Location
+    public virtual HexCell Location
     {
         get
         {
@@ -68,7 +102,7 @@ public class HexUnit : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         if (location)
         {
@@ -129,14 +163,16 @@ public class HexUnit : MonoBehaviour
     public void Save(BinaryWriter writer)
     {
         location.coordinates.Save(writer);
+        writer.Write((byte)UnitID);
         writer.Write(orientation);
     }
 
     public static void Load (BinaryReader reader, HexGrid grid)
     {
         HexCoordinates coordinates = HexCoordinates.Load(reader);
+        int unitID = reader.ReadByte();
         float orientation = reader.ReadSingle();
-        grid.AddUnit(Instantiate(unitPrefab), grid.GetHexCell(coordinates), orientation);
+        grid.AddUnit(Instantiate(grid.unitsCollection.PickUnit(unitID)), grid.GetHexCell(coordinates), orientation);
     }
 
     public bool IsValidDestination (HexCell cell)
@@ -224,7 +260,7 @@ public class HexUnit : MonoBehaviour
         pathToTravel = null;
     }
 
-    private IEnumerator LookAt (Vector3 point)
+    protected IEnumerator LookAt (Vector3 point)
     {
         if (HexDefinition.Wrapping)
         {
@@ -263,5 +299,15 @@ public class HexUnit : MonoBehaviour
 
         transform.LookAt(point);
         orientation = transform.localRotation.eulerAngles.y;
+    }
+
+    protected void DecreaseHealth(int damage)
+    {
+        Health -= damage;
+    }
+
+    public void Attack(HexUnit unit, int damage)
+    {
+        unit.DecreaseHealth(damage);
     }
 }

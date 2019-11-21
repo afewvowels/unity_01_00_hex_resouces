@@ -8,11 +8,16 @@ public class HexGameUI : MonoBehaviour
     private HexCell currentCell;
 
     [SerializeField]
-    private HexUnit selectedUnit;
+    public HexUnit selectedUnit;
+
+    [SerializeField]
+    public BuildingBaseClass selectedBuilding;
+
+    public UISelectedMenu selectedMenu;
 
     private void FixedUpdate()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current.IsPointerOverGameObject())
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -62,9 +67,23 @@ public class HexGameUI : MonoBehaviour
     {
         grid.ClearPath();
         UpdateCurrentCell();
-        if (currentCell)
+        if (currentCell.Unit)
         {
             selectedUnit = currentCell.Unit;
+            selectedBuilding = null;
+
+            selectedMenu.Open();
+        }
+        else if (currentCell.Building)
+        {
+            selectedBuilding = currentCell.Building;
+            selectedUnit = null;
+
+            selectedMenu.Open();
+        }
+        else
+        {
+            selectedMenu.Close();
         }
     }
 

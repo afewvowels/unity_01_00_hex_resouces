@@ -40,7 +40,7 @@ public class UIUnitsMenu : MonoBehaviour
         {
             UIUnitsIconItem menuIcon = Instantiate(unitIconPrefab);
             menuIcon.unitsMenu = this;
-            menuIcon.SetFields(unitsCollection.prefabs[i].GetComponent<HexUnit>());
+            menuIcon.SetFields(unitsCollection.PickUnit(i));
             menuIcon.transform.SetParent(listContent, false);
         }
     }

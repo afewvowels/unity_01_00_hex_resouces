@@ -14,4 +14,19 @@ public struct HexFeatureCollection
     {
         return prefabs[0];
     }
+
+    public HexUnit PickUnit (int choice)
+    {
+        return prefabs[choice].GetComponent<HexUnit>();
+    }
+
+    public ResourceBaseClass PickResource (int choice)
+    {
+        return prefabs[choice].GetComponent<ResourceBaseClass>();
+    }
+
+    public BuildingBaseClass PickBuilding (int choice)
+    {
+        return prefabs[choice].GetComponent<BuildingBaseClass>();
+    }
 }

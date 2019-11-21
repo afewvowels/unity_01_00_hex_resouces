@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class HexGridChunk : MonoBehaviour
 {
-    HexCell[] hexCells;
+    public HexCell[] hexCells;
 
     public HexMesh terrain, rivers, roads, water, waterShore, estuaries;
 
@@ -20,7 +20,6 @@ public class HexGridChunk : MonoBehaviour
     private void Awake()
     {
         gridCanvas = GetComponentInChildren<Canvas>();
-
         hexCells = new HexCell[HexDefinition.chunkSizeX * HexDefinition.chunkSizeZ];
     }
 
@@ -97,9 +96,9 @@ public class HexGridChunk : MonoBehaviour
                 features.AddSpecialFeature(cell, cell.Position);
             }
 
-            if (cell.HasResource)
+            if (cell.ResourceType > 0)
             {
-                resources.AddResource(cell, cell.Position);
+                resources.AddResource(cell);
             }
         }
     }

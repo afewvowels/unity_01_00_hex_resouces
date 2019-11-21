@@ -13,6 +13,11 @@ TagManager:
   - chunkmesh
   - gridcanvas
   - featuresroot
+  - resourcesroot
+  - resource
+  - buildingsroot
+  - building
+  - economytext
   layers:
   - Default
   - TransparentFX

@@ -11,6 +11,9 @@ public class UIUnitsIconItem : MonoBehaviour
     [SerializeField]
     private string thisUnitName;
 
+    [SerializeField]
+    private int unitID;
+
     //public string UnitName
     //{
     //    get
@@ -45,5 +48,6 @@ public class UIUnitsIconItem : MonoBehaviour
         UnitInfo = unit;
         thisUnitName = unit.unitName;
         transform.GetChild(0).GetComponent<Text>().text = thisUnitName;
+        unitID = unit.UnitID;
     }
 }

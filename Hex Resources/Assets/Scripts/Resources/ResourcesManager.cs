@@ -21,12 +21,13 @@ public class ResourcesManager : MonoBehaviour
 
     }
 
-    public void AddResource (HexCell cell, Vector3 position)
+    public void AddResource (HexCell cell)
     {
-        Transform prefab = resourcesCollection.PickFirst();
-        Transform instance = Instantiate(prefab);
-        instance.localPosition = HexDefinition.Displace(position);
-        instance.localRotation = Quaternion.Euler(0.0f, 360.0f * Random.value, 0.0f);
-        instance.SetParent(container, false);
+        ResourceBaseClass resource = Instantiate(resourcesCollection.PickResource(0));
+        cell.Resource = resource;
+        resource.Location = cell;
+        resource.transform.localRotation = Quaternion.Euler(0.0f, 360.0f * Random.value, 0.0f);
+        resource.transform.SetParent(container, false);
+        //ResourcesRoot.resourcesGlobalList.Add(resource);
     }
 }

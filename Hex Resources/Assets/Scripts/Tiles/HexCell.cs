@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class HexCell : MonoBehaviour
 {
-    public enum DjikstraColor { white, grey, black };
-
     public HexCoordinates coordinates;
 
     public RectTransform uiRect;
@@ -13,16 +11,7 @@ public class HexCell : MonoBehaviour
     [SerializeField]
     private int terrainTypeIndex;
 
-	private bool isOccupied;
-
-	public int startCellID;
     private int distance;
-
-	[SerializeField]
-	private DjikstraColor color;
-
-	[SerializeField]
-	private int djikstraCost;
 
 	[SerializeField]
 	private int parentCellID;
@@ -31,16 +20,13 @@ public class HexCell : MonoBehaviour
 	int cellID;
 
 	[SerializeField]
-	int moveCost;
-
-	[SerializeField]
-	HexCell[] neighbors;
+	HexCell[] neighbors = null;
 
 	[SerializeField]
 	private int elevation = int.MinValue;
 
     [SerializeField]
-    private bool[] roads;
+    private bool[] roads = null;
 
     public int SearchPhase { get; set; }
     public int Index { get; set; }
@@ -56,31 +42,74 @@ public class HexCell : MonoBehaviour
     private int visibility;
 
     [SerializeField]
-    public HexUnit unit;
+    private HexUnit unit;
+
+    [SerializeField]
+    private BuildingBaseClass building;
 
     [SerializeField]
     private HexDirection incomingRiverDirection, outgoingRiverDirection;
 
+    [SerializeField]
     public HexCell PathFrom { get; set; }
+
+    [SerializeField]
     public int SearchHeuristic { get; set; }
 
     public HexCell NextWithSamePriority { get; set; }
 
-    public HexUnit Unit { get; set; }
+    public BuildingBaseClass Building
+    {
+        get
+        {
+            return building;
+        }
+        set
+        {
+            building = value;
+        }
+    }
+
+    public HexUnit Unit
+    {
+        get
+        {
+            return unit;
+        }
+        set
+        {
+            unit = value;
+        }
+    }
 
     public HexCellShaderData ShaderData { get; set; }
 
     public int ColumnIndex { get; set; }
 
-    private int resourceType;
+    [SerializeField]
+    private ResourceBaseClass resource;
+
+    public ResourceBaseClass Resource
+    {
+        get
+        {
+            return resource;
+        }
+        set
+        {
+            resource = value;
+        }
+    }
 
     public bool HasResource
     {
         get
         {
-            return resourceType > 0;
+            return Resource != null;
         }
     }
+
+    private int resourceType = int.MinValue;
 
     public int ResourceType
     {
@@ -90,10 +119,7 @@ public class HexCell : MonoBehaviour
         }
         set
         {
-            if (value > 0)
-            {
-                resourceType = value;
-            }
+            resourceType = value;
         }
     }
 
@@ -433,13 +459,7 @@ public class HexCell : MonoBehaviour
 
 	private void Awake()
 	{
-		ResetDjikstra();
-		moveCost = Mathf.RoundToInt(Random.Range(1.0f, 4.0f));
-		if (moveCost == 4)
-		{
-			moveCost = 100;
-		}
-        SetIsOccupied(false);
+
 	}
 
     public void RefreshPosition()
@@ -484,50 +504,6 @@ public class HexCell : MonoBehaviour
 		return cellID;
 	}
 
-	public void SetDjikstraGrey()
-	{
-		color = DjikstraColor.grey;
-	}
-
-	public void SetDjikstraBlack()
-	{
-		color = DjikstraColor.black;
-	}
-
-	public void SetOrigin()
-	{
-		djikstraCost = 0;
-		SetDjikstraGrey();
-		parentCellID = cellID;
-	}
-
-	public int GetDjikstraCost()
-	{
-		return djikstraCost;
-	}
-
-	public void SetDjikstraCost(int cost)
-	{
-		djikstraCost = cost;
-	}
-
-	public DjikstraColor GetDjikstraColor()
-	{
-		return color;
-	}
-
-	public int GetMoveCost()
-	{
-		return moveCost;
-	}
-
-	public void ResetDjikstra()
-	{
-		color = DjikstraColor.white;
-		djikstraCost = 9999;
-		parentCellID = cellID;
-	}
-
 	public void SetParentCellID(int id)
 	{
 		parentCellID = id;
@@ -536,16 +512,6 @@ public class HexCell : MonoBehaviour
 	public int GetParentCellID()
 	{
 		return parentCellID;
-	}
-
-	public bool GetIsOccupied()
-	{
-		return isOccupied;
-	}
-
-	public void SetIsOccupied(bool isOccupied)
-	{
-		this.isOccupied = isOccupied;
 	}
 
 	public HexDefinition.HexEdgeType GetEdgeType(HexDirection direction)
@@ -731,7 +697,6 @@ public class HexCell : MonoBehaviour
         writer.Write((byte)farmLevel);
         writer.Write((byte)plantLevel);
         writer.Write((byte)specialIndex);
-        writer.Write((byte)resourceType);
         writer.Write(walled);
 
         if (hasIncomingRiver)
@@ -780,7 +745,6 @@ public class HexCell : MonoBehaviour
         farmLevel = reader.ReadByte();
         plantLevel = reader.ReadByte();
         specialIndex = reader.ReadByte();
-        resourceType = reader.ReadByte();
         walled = reader.ReadBoolean();
 
         byte riverData = reader.ReadByte();

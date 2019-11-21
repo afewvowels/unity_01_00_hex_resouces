@@ -17,17 +17,12 @@ public class HexGrid : MonoBehaviour
 	public Text cellLabelPrefab;
 
 	public Canvas gridCanvas;
-	private bool isFound;
 
 	public HexCell[] cells;
 	public HexMesh hexMesh;
 
-	public List<HexCell> sortedHexes;
-	public List<HexCell> path;
-
 	public List<int> pathIndexes;
 
-	public GameObject player;
     public GameObject unitsRoot;
 
     public Texture2D noiseSource;
@@ -46,7 +41,12 @@ public class HexGrid : MonoBehaviour
     private bool currentPathExists;
 
     [SerializeField]
-    private List<HexUnit> units = new List<HexUnit>();
+    public List<HexUnit> units = new List<HexUnit>();
+
+    public List<BuildingBaseClass> buildings = new List<BuildingBaseClass>();
+
+    [SerializeField]
+    public List<ResourceBaseClass> resourcesList = new List<ResourceBaseClass>();
 
     public HexUnit unitPrefab;
 
@@ -61,6 +61,8 @@ public class HexGrid : MonoBehaviour
     private Transform[] columns;
 
     private int currentCenterColumnIndex = -1;
+
+    public HexFeatureCollection unitsCollection;
 
     public bool HasPath
     {
@@ -83,9 +85,6 @@ public class HexGrid : MonoBehaviour
 
 	private void Start()
 	{
-		isFound = false;
-		sortedHexes = new List<HexCell>();
-		path = new List<HexCell>();
 		pathIndexes = new List<int>();
         generator.GenerateMap(cellCountX, cellCountZ, wrapping);
     }
@@ -335,9 +334,6 @@ public class HexGrid : MonoBehaviour
 		position = transform.InverseTransformPoint(position);
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 
-        //int index = coordinates.X + coordinates.Z * cellCountX + coordinates.Z / 2;
-        //HexCell cell = cells[index];
-        //return cell;
         return GetHexCell(coordinates);
 	}
 
@@ -349,107 +345,6 @@ public class HexGrid : MonoBehaviour
 		HexCell cell = cells[index];
 		go.transform.position = cell.transform.position;
 		Debug.Log("moved");
-	}
-
-	public void FindPath(HexCell destination)
-	{
-		int index = 0;
-		sortedHexes = sortedHexes.OrderBy(x => x.GetDjikstraCost()).ToList();
-
-		HexCell activeCell = sortedHexes[index];
-		sortedHexes.RemoveAt(index);
-
-		Debug.Log("cell id: " + activeCell.GetCellID() + ", djikstra cost: " + activeCell.GetDjikstraCost());
-		activeCell.SetDjikstraBlack();
-		foreach (HexCell neighbor in activeCell.GetNeighbors())
-		{
-			if (neighbor != null && neighbor.GetDjikstraColor() != HexCell.DjikstraColor.black)
-			{
-				int newCost = activeCell.GetDjikstraCost() + neighbor.GetMoveCost();
-
-				if (newCost < neighbor.GetDjikstraCost() && !isFound && neighbor.GetDjikstraColor() != HexCell.DjikstraColor.black)
-				{
-					neighbor.SetDjikstraGrey();
-					neighbor.SetDjikstraCost(newCost);
-					neighbor.SetParentCellID(activeCell.GetCellID());
-					//CreateLabel(0, 0, neighbor.transform.position, neighbor);
-					if (neighbor.GetCellID() == destination.GetCellID())
-					{
-						BuildArray(destination);
-						FollowPath();
-						isFound = true;
-					}
-					else
-					{
-						sortedHexes.Add(neighbor);
-					}
-				}
-			}
-		}
-
-		//RedrawGrid();
-
-		if (!isFound)
-		{
-			FindPath(destination);
-		}
-	}
-
-	public void RedrawGrid()
-	{
-		//hexMesh.Triangulate(cells);
-	}
-
-	public void BuildArray(HexCell destination)
-	{
-		Debug.Log("build array");
-		path.Clear();
-		pathIndexes.Clear();
-		path.Add(destination);
-		pathIndexes.Add(destination.GetCellID());
-
-		HexCell tempCell = cells[destination.GetParentCellID()];
-
-		path.Add(tempCell);
-		pathIndexes.Add(tempCell.GetCellID());
-
-		while (tempCell.GetCellID() != tempCell.GetParentCellID())
-		{
-			tempCell = cells[tempCell.GetParentCellID()];
-			path.Add(tempCell);
-			pathIndexes.Add(tempCell.GetCellID());
-		}
-		Debug.Log("finished building array");
-	}
-
-	public void FollowPath()
-	{
-		ColorPath();
-	}
-
-	public void ColorPath()
-	{
-		for (int i = 0; i < path.Count - 1; i++)
-		{
-			//cells[pathIndexes[i]].Color = Color.white;
-		}
-		//hexMesh.Triangulate(cells);
-	}
-
-	public List<int> GetPathIndexes()
-	{
-		return pathIndexes;
-	}
-
-	public void ResetGrid()
-	{
-		foreach (HexCell cell in cells)
-		{
-			cell.ResetDjikstra();
-		}
-		sortedHexes.Clear();
-		path.Clear();
-		pathIndexes.Clear();
 	}
 
     public float GetSizeX()
@@ -528,13 +423,16 @@ public class HexGrid : MonoBehaviour
         cellShaderData.ImmediateMode = originalImmediateMode;
     }
 
-    public void FindPath(HexCell fromCell, HexCell toCell, int speed)
+    public void FindPath(HexCell fromCell, HexCell toCell, int speed, bool showPath = true)
     {
         ClearPath();
         currentPathFrom = fromCell;
         currentPathTo = toCell;
         currentPathExists = Search(fromCell, toCell, speed);
-        ShowPath(speed);
+        if (showPath)
+        {
+            ShowPath(speed);
+        }
     }
 
     bool Search (HexCell fromCell, HexCell toCell, int speed)
@@ -549,7 +447,7 @@ public class HexGrid : MonoBehaviour
             searchFringe.Clear();
         }
 
-        fromCell.EnableHighlight(Color.blue);
+        //fromCell.EnableHighlight(Color.blue);
 
         fromCell.SearchPhase = searchFringePhase;
         fromCell.Distance = 0;
@@ -574,9 +472,12 @@ public class HexGrid : MonoBehaviour
                 {
                     continue;
                 }
-                if (neighbor.IsUnderwater || neighbor.Unit)
+                if (neighbor != toCell)
                 {
-                    continue;
+                    if (neighbor.IsUnderwater || neighbor.Unit || neighbor.HasResource || neighbor.Building)
+                    {
+                        continue;
+                    }
                 }
 
                 HexDefinition.HexEdgeType edgeType = current.GetEdgeType(neighbor);
@@ -661,37 +562,6 @@ public class HexGrid : MonoBehaviour
             currentPathTo.DisableHighlight();
         }
         currentPathFrom = currentPathTo = null;
-    }
-
-    private void ClearUnits()
-    {
-        for (int i = 0; i < units.Count; i++)
-        {
-            units[i].Die();
-        }
-        units.Clear();
-    }
-
-    public void AddUnit (HexUnit unit, HexCell location, float orientation)
-    {
-        units.Add(unit);
-        unit.Grid = this;
-        unit.Location = location;
-        unit.Orientation = orientation;
-    }
-
-    public void RemoveUnit(HexUnit unit)
-    {
-        units.Remove(unit);
-        unit.Die();
-    }
-
-    public void ShowUI (bool visible)
-    {
-        for (int i = 0; i < chunks.Count(); i++)
-        {
-            chunks[i].ShowUI(visible);
-        }
     }
 
     public List<HexCell> GetPath()
@@ -846,5 +716,74 @@ public class HexGrid : MonoBehaviour
     public void MakeChildOfColumn (Transform child, int columnIndex)
     {
         child.SetParent(columns[columnIndex], false);
+    }
+
+    public static bool IsCellAdjacent (HexCell fromCell, HexCell toCell)
+    {
+        foreach (HexCell neighbor in fromCell.GetNeighbors())
+        {
+            if (neighbor == toCell)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void ClearUnits()
+    {
+        for (int i = 0; i < units.Count; i++)
+        {
+            units[i].Die();
+        }
+        units.Clear();
+    }
+
+    public void AddUnit(HexUnit unit, HexCell location, float orientation)
+    {
+        units.Add(unit);
+        unit.Grid = this;
+        unit.Location = location;
+        unit.Orientation = orientation;
+    }
+
+    public void AddResource(ResourceBaseClass resource, HexCell location, float orientation)
+    {
+        resourcesList.Add(resource);
+        resource.Grid = this;
+        resource.Location = location;
+        resource.Orientation = orientation;
+    }
+
+    public void AddBuilding(BuildingBaseClass building, HexCell location)
+    {
+        buildings.Add(building);
+        building.Grid = this;
+        building.Location = location;
+    }
+
+    public void RemoveUnit(HexUnit unit)
+    {
+        unit.Die();
+        units.Remove(unit);
+    }
+
+    public void RemoveResource(ResourceBaseClass resource)
+    {
+        resourcesList.Remove(resource);
+    }
+
+    public void RemoveBuilding(BuildingBaseClass building)
+    {
+        buildings.Remove(building);
+    }
+
+    public void ShowUI(bool visible)
+    {
+        for (int i = 0; i < chunks.Count(); i++)
+        {
+            chunks[i].ShowUI(visible);
+        }
     }
 }

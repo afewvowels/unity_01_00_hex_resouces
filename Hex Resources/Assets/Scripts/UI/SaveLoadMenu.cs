@@ -5,8 +5,6 @@ using System;
 
 public class SaveLoadMenu : MonoBehaviour
 {
-    private bool saveMode;
-
     public Text menuLabel, actionButtonLabel;
 
     public HexGrid hexGrid;
@@ -20,29 +18,6 @@ public class SaveLoadMenu : MonoBehaviour
     public NewMapMenu mainMenu;
 
     private const int mapFileVersion = 5;
-
-    private string fileName;
-
-    //public void Open (bool saveMode)
-    //{
-    //    this.saveMode = saveMode;
-
-    //    if (saveMode)
-    //    {
-    //        menuLabel.text = "Save map";
-    //        actionButtonLabel.text = "Save";
-    //    }
-    //    else
-    //    {
-    //        menuLabel.text = "Load map";
-    //        actionButtonLabel.text = "Load";
-    //    }
-
-    //    FillList();
-    //    gameObject.SetActive(true);
-    //    HexMapCamera.Locked = true;
-    //}
-
 
     public void Open()
     {
@@ -129,25 +104,6 @@ public class SaveLoadMenu : MonoBehaviour
 
         nameInput.text = "";
         FillList();
-    }
-
-    public void Action()
-    {
-        string path = GetSelectedPath();
-        if (path == null)
-        {
-            return;
-        }
-
-        if (saveMode)
-        {
-            Save(path);
-        }
-        else
-        {
-            Load(path);
-        }
-        Close();
     }
 
     public void SelectItem (string name)

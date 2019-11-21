@@ -5,6 +5,8 @@ public class HexMapGenerator : MonoBehaviour
 {
     public HexGrid grid;
 
+    public ResourcesManager resourcesManager;
+
     private int cellCount, landCells;
 
     private HexCellPriorityQueue searchFrontier;
@@ -896,7 +898,8 @@ public class HexMapGenerator : MonoBehaviour
             HexCell cell = grid.GetRandomHexCell();
             if (!cell.IsUnderwater &&
                 !cell.HasRiver &&
-                cell.PlanetLevel == 0)
+                cell.PlanetLevel == 0 &&
+                cell.Explorable)
             {
                 cell.ResourceType = 1;
                 resourceCount++;
