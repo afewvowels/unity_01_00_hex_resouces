@@ -58,6 +58,14 @@ public class HexCell : MonoBehaviour
 
     public HexCell NextWithSamePriority { get; set; }
 
+    public bool IsValidBuildLocation
+    {
+        get
+        {
+            return (!IsUnderwater && !Unit && !Building && IsVisible && !HasRiver && !Resource);
+        }
+    }
+
     public BuildingBaseClass Building
     {
         get
@@ -456,11 +464,6 @@ public class HexCell : MonoBehaviour
             return waterLevel > elevation;
         }
     }
-
-	private void Awake()
-	{
-
-	}
 
     public void RefreshPosition()
     {

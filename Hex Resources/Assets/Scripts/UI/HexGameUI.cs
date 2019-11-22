@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class HexGameUI : MonoBehaviour
 {
     public HexGrid grid;
 
-    private HexCell currentCell;
+    public HexCell currentCell;
 
     [SerializeField]
     public HexUnit selectedUnit;
@@ -15,15 +16,21 @@ public class HexGameUI : MonoBehaviour
 
     public UISelectedMenu selectedMenu;
 
+    public UISecretMenu secretMenu;
+
     private void FixedUpdate()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current.IsPointerOverGameObject() && !IsPointerOverUIElement())
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && selectedMenu.placeBuilding != true)
             {
                 DoSelection();
             }
-            else if (selectedUnit)
+            else if (selectedMenu.placeBuilding)
+            {
+                grid.ClearPath();
+            }
+            else if (selectedUnit && selectedMenu.placeBuilding != true)
             {
                 if (Input.GetMouseButtonDown(1))
                 {
@@ -33,6 +40,17 @@ public class HexGameUI : MonoBehaviour
                 {
                     DoPathfinding();
                 }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (!secretMenu.isOpen)
+            {
+                secretMenu.Close();
+            }
+            else
+            {
+                secretMenu.Open();
             }
         }
     }
@@ -52,7 +70,7 @@ public class HexGameUI : MonoBehaviour
         }
     }
 
-    private bool UpdateCurrentCell()
+    public bool UpdateCurrentCell()
     {
         HexCell cell = grid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
         if (cell != currentCell)
@@ -109,5 +127,30 @@ public class HexGameUI : MonoBehaviour
             selectedUnit.Travel(grid.GetPath());
             grid.ClearPath();
         }
+    }
+    ///Returns 'true' if we touched or hovering on Unity UI element.
+    public static bool IsPointerOverUIElement()
+    {
+        return IsPointerOverUIElement(GetEventSystemRaycastResults());
+    }
+    ///Returns 'true' if we touched or hovering on Unity UI element.
+    public static bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaysastResults )
+    {
+        for(int index = 0;  index < eventSystemRaysastResults.Count; index ++)
+        {
+            RaycastResult curRaysastResult = eventSystemRaysastResults [index];
+            if (curRaysastResult.gameObject.layer == LayerMask.NameToLayer("selectedui"))
+                return true;
+        }
+        return false;
+    }
+    ///Gets all event systen raycast results of current mouse or touch position.
+    static List<RaycastResult> GetEventSystemRaycastResults()
+    {   
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position =  Input.mousePosition;
+        List<RaycastResult> raysastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll( eventData, raysastResults );
+        return raysastResults;
     }
 }

@@ -5,8 +5,6 @@ using UnityEngine.EventSystems;
 
 public class BuildingsRoot : MonoBehaviour
 {
-    public BuildingBaseClass buildingPrefab;
-
     public HexGrid grid;
 
     public BuildingBaseClass[] buildings;
@@ -46,6 +44,20 @@ public class BuildingsRoot : MonoBehaviour
                     }
                 }
                 isSet = true;
+            }
+        }
+    }
+
+    public void CreateBuilding(BuildingBaseClass building, HexUnit unit, HexCell location)
+    {
+        //grid.AddBuilding(Instantiate(building), location);
+        foreach (HexCell neighbor in location.GetNeighbors())
+        {
+            if (!neighbor.IsUnderwater && neighbor.Explorable &&
+                !neighbor.Resource && !neighbor.Unit)
+            {
+                grid.AddUnit(Instantiate(unit), neighbor, 150.0f);
+                return;
             }
         }
     }

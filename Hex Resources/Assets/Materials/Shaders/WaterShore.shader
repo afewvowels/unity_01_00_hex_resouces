@@ -7,6 +7,7 @@
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Specular ("Specular", Color) = (0.2, 0.2, 0.2)
         _BackgroundColor ("Background Color", Color) = (0, 0, 0)
+        [NoScaleOffset] _HeightMap ("Heights", 2D) = "grey" {}
     }
     SubShader
     {
@@ -32,7 +33,11 @@
             float2 uv_MainTex;
             float3 worldPos;
             float2 visibility;
+            float2 uv_HeightMap;
         };
+        
+        sampler2D _HeightMap;
+        float4 _HeightMap_TexelSize;
 
         half _Glossiness;
         fixed3 _Specular;
@@ -65,6 +70,13 @@
             float foam = Foam(shore, IN.worldPos.xz, _MainTex);
             float waves = Waves(IN.worldPos.xz, _MainTex);
             waves *= 1 - shore;
+
+            
+            float2 heightUV = IN.worldPos.xz;
+            heightUV.x *= 1 / (4 * 8.66025404);
+            heightUV.y *= 1 / (2 * 15.0);
+            heightUV *= 0.45;
+            o.Normal = UnpackNormal (tex2D(_HeightMap, heightUV));
 
 
             fixed4 c = saturate(_Color + max(foam, waves));

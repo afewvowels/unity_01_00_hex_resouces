@@ -34,7 +34,7 @@ public class ResourcesRoot : MonoBehaviour
 
         foreach (ResourceBaseClass resource in resources)
         {
-            if (resource.ResourceAmount > 10)
+            if (resource.ResourceAmount > 25)
             {
                 grid.FindPath(origin, resource.Location, 10, false);
                 List<HexCell> tempPath = grid.GetPath();

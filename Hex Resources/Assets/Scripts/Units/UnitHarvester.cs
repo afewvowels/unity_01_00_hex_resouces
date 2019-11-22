@@ -17,12 +17,16 @@ public class UnitHarvester : HexUnit
 
     public bool needsDestination;
 
+    ParticleSystem.EmissionModule particles;
+
     private void Awake()
     {
         needsDestination = true;
         heldResources = 0;
         resourcesRoot = GameObject.FindGameObjectWithTag("resourcesroot").GetComponent<ResourcesRoot>();
         buildingsRoot = GameObject.FindGameObjectWithTag("buildingsroot").GetComponent<BuildingsRoot>();
+        particles = GetComponentInChildren<ParticleSystem>().emission;
+        particles.rateOverTime = new ParticleSystem.MinMaxCurve(0.0f);
     }
 
     void FixedUpdate()
@@ -67,6 +71,7 @@ public class UnitHarvester : HexUnit
 
     private IEnumerator TravelPathHarvester()
     {
+        particles.rateOverTime = new ParticleSystem.MinMaxCurve(35.0f);
         Vector3 a, b, c = pathToTravel[0].Position;
         yield return LookAt(pathToTravel[1].Position);
         if (!currentTravelLocation)
@@ -134,6 +139,7 @@ public class UnitHarvester : HexUnit
         ListPool<HexCell>.Add(pathToTravel);
         pathToTravel = null;
 
+        particles.rateOverTime = new ParticleSystem.MinMaxCurve(0.0f);
         yield return DoAdjacent();
     }
 

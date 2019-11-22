@@ -92,6 +92,9 @@ public class HexMapGenerator : MonoBehaviour
 
     public HemisphereMode hemisphere;
 
+    public UnitsRoot unitsRoot;
+    public BuildingsRoot buildingsRoot;
+
     struct MapRegion
     {
         public int xMin, xMax, zMin, zMax;
@@ -166,6 +169,7 @@ public class HexMapGenerator : MonoBehaviour
         CreateRivers();
         SetTerrainType();
         PlaceResources();
+        CreateBuilderUnit();
 
         for (int i = 0; i < cellCount; i++)
         {
@@ -905,5 +909,10 @@ public class HexMapGenerator : MonoBehaviour
                 resourceCount++;
             }
         }
+    }
+
+    private void CreateBuilderUnit()
+    {
+        unitsRoot.CreateUnit(unitsRoot.unitsCollection.PickUnit(0));
     }
 }

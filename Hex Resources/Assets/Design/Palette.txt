@@ -1,0 +1,14 @@
+﻿Dark Grey Blue
+#395D73
+
+Yellowish
+#F2CD5C
+
+Peach
+#F29057
+
+Dark Brown
+#59271C
+
+Reddish
+#A62C21

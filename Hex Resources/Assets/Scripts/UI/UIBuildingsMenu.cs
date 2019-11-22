@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class UIBuildingsMenu : MonoBehaviour
 {
     public RectTransform listContent;
 
     public UIBuildingsIconItem buildingIconPrefab;
+
 
     public HexFeatureCollection buildingsCollection;
 
@@ -40,10 +39,10 @@ public class UIBuildingsMenu : MonoBehaviour
 
         for (int i = 0; i < buildingsCollection.prefabs.Length; i++)
         {
-            UIBuildingsIconItem menuIcon = Instantiate(buildingIconPrefab);
-            menuIcon.buildingsMenu = this;
-            menuIcon.SetFields(buildingsCollection.PickBuilding(i));
-            menuIcon.transform.SetParent(listContent, false);
+            UIBuildingsIconItem buildingIcon = Instantiate(buildingIconPrefab);
+            buildingIcon.buildingsMenu = this;
+            buildingIcon.SetFields(buildingsCollection.PickBuilding(i));
+            buildingIcon.transform.SetParent(listContent, false);
         }
     }
 }

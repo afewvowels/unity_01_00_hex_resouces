@@ -64,6 +64,10 @@ public class HexGrid : MonoBehaviour
 
     public HexFeatureCollection unitsCollection;
 
+    public BuildingsRoot buildingsRoot;
+
+    public List<HexCell> adjacentCells = new List<HexCell>();
+
     public bool HasPath
     {
         get
@@ -762,6 +766,7 @@ public class HexGrid : MonoBehaviour
         buildings.Add(building);
         building.Grid = this;
         building.Location = location;
+        building.transform.SetParent(buildingsRoot.transform, false);
     }
 
     public void RemoveUnit(HexUnit unit)

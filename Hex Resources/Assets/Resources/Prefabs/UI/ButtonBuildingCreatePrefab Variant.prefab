@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingsMenu: {fileID: 0}
   buildingInfo: {fileID: 0}
+  selectedMenu: {fileID: 0}
   thisBuildingName: 
   buildingID: 0
 --- !u!1001 &1855182179009093536
@@ -133,6 +134,12 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6451247732879317047, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 883205f49e7e048aa9828aae0894be07,
+        type: 3}
     - target: {fileID: 4902686839620881631, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -142,6 +149,42 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Select
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902686839620881631, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902686839620881631, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902686839620881631, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3462345166203072916, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: e96f0ed28f80c4c80946144cc0251a9e,
+        type: 3}
+    - target: {fileID: 3462345166203072916, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3462345166203072916, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3462345166203072916, guid: c4f54dfeace3c423f80d0178b7e8fc9c,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -491174236939229184, guid: c4f54dfeace3c423f80d0178b7e8fc9c, type: 3}

@@ -7,7 +7,7 @@ public class UIBuildingsIconItem : MonoBehaviour
 
     [SerializeField]
     private BuildingBaseClass buildingInfo;
-
+    public UISelectedMenu selectedMenu;
     [SerializeField]
     private string thisBuildingName;
 
@@ -40,7 +40,20 @@ public class UIBuildingsIconItem : MonoBehaviour
 
     public void Select()
     {
-        buildingsMenu.SelectMenuItem(buildingInfo);
+        if (buildingsMenu)
+        {
+            buildingsMenu.SelectMenuItem(buildingInfo);
+        }
+        else if (selectedMenu)
+        {
+            Debug.Log("place building initiated");
+            StopAllCoroutines();
+            StartCoroutine(selectedMenu.PlaceBuilding(buildingInfo));
+        }
+        else
+        {
+            Debug.Log("No menu associated with this button");
+        }
     }
 
     public void SetFields(BuildingBaseClass building)
