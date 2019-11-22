@@ -129,6 +129,8 @@ public class UISelectedMenu : MonoBehaviour
 
                 gameUI.selectedUnit = null;
 
+                Close();
+
                 placeBuilding = false;
                 yield return null;
             }
