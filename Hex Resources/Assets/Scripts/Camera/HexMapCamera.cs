@@ -42,7 +42,7 @@ public class HexMapCamera : MonoBehaviour
         swivel = transform.GetChild(0);
         stick = transform.GetChild(0);
 
-        ValidatePosition();
+        //ValidatePosition();
     }
 
     private void FixedUpdate()
@@ -150,5 +150,11 @@ public class HexMapCamera : MonoBehaviour
 
         hexGrid.CenterMap(position.x);
         return position;
+    }
+
+    public void CenterOnUnit(Vector3 position)
+    {
+        HexGrid grid = GameObject.FindGameObjectWithTag("hexgrid").GetComponent<HexGrid>();
+        instance.transform.position = new Vector3(position.x, grid.GetSizeZ() / 3.0f, position.z / 2.0f);
     }
 }

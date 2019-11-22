@@ -95,6 +95,8 @@ public class HexMapGenerator : MonoBehaviour
     public UnitsRoot unitsRoot;
     public BuildingsRoot buildingsRoot;
 
+    public HexMapCamera camera;
+
     struct MapRegion
     {
         public int xMin, xMax, zMin, zMax;
@@ -170,6 +172,15 @@ public class HexMapGenerator : MonoBehaviour
         SetTerrainType();
         PlaceResources();
         CreateBuilderUnit();
+
+        GameObject starterUnit = GameObject.FindGameObjectWithTag("starterunit");
+
+        if (starterUnit)
+        {
+            Debug.Log("starter found, x: " + starterUnit.transform.position.x.ToString() + ", z: " + starterUnit.transform.position.z.ToString());
+            camera.CenterOnUnit(starterUnit.transform.position);
+            Debug.Log("camera placed, x: " + camera.transform.position.x.ToString() + ", z: " + camera.transform.position.z.ToString());
+        }
 
         for (int i = 0; i < cellCount; i++)
         {
@@ -914,5 +925,10 @@ public class HexMapGenerator : MonoBehaviour
     private void CreateBuilderUnit()
     {
         unitsRoot.CreateUnit(unitsRoot.unitsCollection.PickUnit(0));
+        foreach (UnitBuilder builder in grid.units)
+        {
+            builder.tag = "starterunit";
+            return;
+        }
     }
 }

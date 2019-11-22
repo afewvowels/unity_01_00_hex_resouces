@@ -10,6 +10,7 @@
         _Specular ("Specular", Color) = (0.2, 0.2, 0.2)
         _BackgroundColor ("Background Color", Color) = (0, 0, 0)
         [Toggle(SHOW_MAP_DATA)] _ShowMapData ("Show Map Data", Float) = 0
+        _BackgroundTex ("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -40,6 +41,7 @@
             float3 terrain;
             float4 visibility;
             float2 uv_HeightMap;
+            float4 screenPos;
 
             #if defined(SHOW_MAP_DATA)
                 float mapData;
@@ -53,7 +55,11 @@
         fixed3 _Specular;
         fixed4 _Color;
         sampler2D _GridTex;
-        half3 _BackgroundColor;
+        // half3 _BackgroundColor;
+
+        sampler2D _BackgroundTex;
+        float4 _BackgroundTex_ST;
+
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -115,10 +121,17 @@
                 o.Albedo = IN.mapData * grid;
             #endif
 
+            float2 bgTexCoordinates = IN.screenPos.xy / IN.screenPos.w;
+            float aspect = _ScreenParams.x / _ScreenParams.y;
+            bgTexCoordinates.x *= aspect;
+            bgTexCoordinates = TRANSFORM_TEX(bgTexCoordinates, _BackgroundTex);
+            fixed4 bgCol = tex2D(_BackgroundTex, bgTexCoordinates);
+
             o.Specular = _Specular * explored;
             o.Smoothness = _Glossiness;
             o.Occlusion = explored;
-            o.Emission = _BackgroundColor * (1 - explored);
+            // o.Emission = _BackgroundColor * (1 - explored);
+            o.Emission = bgCol * (1 - explored);
             o.Normal = UnpackNormal (tex2D(_HeightMap, heightUV));
             o.Alpha = c.a;
         }
