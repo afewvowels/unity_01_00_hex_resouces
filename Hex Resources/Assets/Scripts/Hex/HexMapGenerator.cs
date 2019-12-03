@@ -5,8 +5,6 @@ public class HexMapGenerator : MonoBehaviour
 {
     public HexGrid grid;
 
-    public ResourcesManager resourcesManager;
-
     private int cellCount, landCells;
 
     private HexCellPriorityQueue searchFrontier;
@@ -95,7 +93,7 @@ public class HexMapGenerator : MonoBehaviour
     public UnitsRoot unitsRoot;
     public BuildingsRoot buildingsRoot;
 
-    public HexMapCamera camera;
+    public HexMapCamera hexMapCamera;
 
     struct MapRegion
     {
@@ -106,7 +104,7 @@ public class HexMapGenerator : MonoBehaviour
     {
         public int terrain, plant;
 
-        public Biome (int terrain, int plant)
+        public Biome(int terrain, int plant)
         {
             this.terrain = terrain;
             this.plant = plant;
@@ -140,7 +138,7 @@ public class HexMapGenerator : MonoBehaviour
         Both, North, South
     }
 
-    public void GenerateMap (int x, int z, bool wrapping)
+    public void GenerateMap(int x, int z, bool wrapping)
     {
         Random.State originalRandomState = Random.state;
         if (!useFixedSeed)
@@ -173,14 +171,11 @@ public class HexMapGenerator : MonoBehaviour
         PlaceResources();
         CreateBuilderUnit();
 
-        GameObject starterUnit = GameObject.FindGameObjectWithTag("starterunit");
+        Economy.StartNewGame();
+        HexGameUI.ClearSelected();
+        TechTree.Unlocks.StartNewGame();
 
-        if (starterUnit)
-        {
-            Debug.Log("starter found, x: " + starterUnit.transform.position.x.ToString() + ", z: " + starterUnit.transform.position.z.ToString());
-            camera.CenterOnUnit(starterUnit.transform.position);
-            Debug.Log("camera placed, x: " + camera.transform.position.x.ToString() + ", z: " + camera.transform.position.z.ToString());
-        }
+        hexMapCamera.CenterOnUnit();
 
         for (int i = 0; i < cellCount; i++)
         {
@@ -286,8 +281,8 @@ public class HexMapGenerator : MonoBehaviour
     private HexCell GetRandomCell(MapRegion region)
     {
         return grid.GetCellByOffset(
-            Random.Range(region.xMin, region.xMax),
-            Random.Range(region.zMin, region.zMax)
+            Random.Range(region.xMin, region.xMax - 1),
+            Random.Range(region.zMin, region.zMax - 1)
             );
     }
 
@@ -335,7 +330,7 @@ public class HexMapGenerator : MonoBehaviour
             if (!cell.IsUnderwater)
             {
                 int t = 0;
-                for(; t < temperatureBands.Length; t++)
+                for (; t < temperatureBands.Length; t++)
                 {
                     if (temperature < temperatureBands[t])
                     {
@@ -343,7 +338,7 @@ public class HexMapGenerator : MonoBehaviour
                     }
                 }
                 int m = 0;
-                for(; m < moistureBands.Length; m++)
+                for (; m < moistureBands.Length; m++)
                 {
                     if (moisture < moistureBands[m])
                     {
@@ -374,7 +369,7 @@ public class HexMapGenerator : MonoBehaviour
                 }
 
                 cell.TerrainTypeIndex = cellBiome.terrain;
-                cell.PlanetLevel = cellBiome.plant;
+                cell.PlantLevel = cellBiome.plant;
             }
             else
             {
@@ -456,7 +451,7 @@ public class HexMapGenerator : MonoBehaviour
 
         int borderX = grid.wrapping ? regionBorder : mapBorderX;
         MapRegion region;
-        switch(regionCount)
+        switch (regionCount)
         {
             default:
                 if (grid.wrapping)
@@ -589,7 +584,7 @@ public class HexMapGenerator : MonoBehaviour
         ListPool<HexCell>.Add(erodibleCells);
     }
 
-    private bool IsErodible (HexCell cell)
+    private bool IsErodible(HexCell cell)
     {
         int erodableElevation = cell.Elevation - 2;
         for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
@@ -604,7 +599,7 @@ public class HexMapGenerator : MonoBehaviour
         return false;
     }
 
-    private HexCell GetErosionTarget (HexCell cell)
+    private HexCell GetErosionTarget(HexCell cell)
     {
         List<HexCell> candidates = ListPool<HexCell>.Get();
         int erodibleElevation = cell.Elevation - 2;
@@ -792,7 +787,7 @@ public class HexMapGenerator : MonoBehaviour
         ListPool<HexCell>.Add(riverOrigins);
     }
 
-    private int CreateRiver (HexCell origin)
+    private int CreateRiver(HexCell origin)
     {
         List<HexDirection> flowDirections = new List<HexDirection>();
         int length = 1;
@@ -842,7 +837,7 @@ public class HexMapGenerator : MonoBehaviour
                 if (length == 1 ||
                     (d != direction.Next() && d != direction.Previous2())
                     )
-                flowDirections.Add(d);
+                    flowDirections.Add(d);
             }
 
             if (flowDirections.Count == 0)
@@ -878,7 +873,7 @@ public class HexMapGenerator : MonoBehaviour
         return length;
     }
 
-    private float DetermineTemperature (HexCell cell)
+    private float DetermineTemperature(HexCell cell)
     {
         float latitude = (float)cell.coordinates.Z / grid.cellCountZ;
 
@@ -913,7 +908,7 @@ public class HexMapGenerator : MonoBehaviour
             HexCell cell = grid.GetRandomHexCell();
             if (!cell.IsUnderwater &&
                 !cell.HasRiver &&
-                cell.PlanetLevel == 0 &&
+                cell.PlantLevel == 0 &&
                 cell.Explorable)
             {
                 cell.ResourceType = 1;

@@ -44,9 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3703fbbbe1f594ce59bf296e597e7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectName: 
+  objectID: 0
+  health: 100
+  unitID: 0
   location: {fileID: 0}
+  currentTravelLocation: {fileID: 0}
   pathToTravel: []
   unitName: Ring
+  baseUnitDescription: This unit is a ring
+  baseUnitBuildTime: 0
+  baseUnitCost: 100
 --- !u!1001 &5680855071107896933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54,11 +62,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7732382123192122464}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 9ac7a5d657b8a064b8f5a0f82c5eb7af,
-        type: 3}
-      propertyPath: m_Name
-      value: Ring
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 9ac7a5d657b8a064b8f5a0f82c5eb7af,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -134,6 +137,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: d5d95f624015f4dba8ff2ee9af444899, type: 2}
+    - target: {fileID: -927199367670048503, guid: 9ac7a5d657b8a064b8f5a0f82c5eb7af,
+        type: 3}
+      propertyPath: m_Name
+      value: Ring
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ac7a5d657b8a064b8f5a0f82c5eb7af, type: 3}
 --- !u!4 &841266412059458943 stripped

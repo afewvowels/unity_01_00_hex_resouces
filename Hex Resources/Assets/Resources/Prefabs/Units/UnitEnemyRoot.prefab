@@ -44,10 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3703fbbbe1f594ce59bf296e597e7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectName: 
+  objectID: 0
+  health: 100
   unitID: 1
   location: {fileID: 0}
+  currentTravelLocation: {fileID: 0}
   pathToTravel: []
   unitName: Monkey
+  baseUnitDescription: Default blender monkey object
+  baseUnitBuildTime: 0
+  baseUnitCost: 100
 --- !u!1001 &9040679982236938390
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55,11 +62,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 344426967025321358}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 0a02c27def32e4f778382ce4a736e64f,
-        type: 3}
-      propertyPath: m_Name
-      value: enemy
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 0a02c27def32e4f778382ce4a736e64f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -135,6 +137,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 776f13dd5db4540258f82be3e6721a48, type: 2}
+    - target: {fileID: -927199367670048503, guid: 0a02c27def32e4f778382ce4a736e64f,
+        type: 3}
+      propertyPath: m_Name
+      value: enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a02c27def32e4f778382ce4a736e64f, type: 3}
 --- !u!4 &4038680231579360140 stripped

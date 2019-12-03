@@ -25,11 +25,11 @@ public class UISelectedMenu : MonoBehaviour
     public void Open()
     {
         gameObject.SetActive(true);
-        if (gameUI.selectedUnit)
+        if (HexGameUI.selectedUnit)
         {
             InitializeUnitMenu();
         }
-        else if (gameUI.selectedBuilding)
+        else if (HexGameUI.selectedBuilding)
         {
             InitializeBuildingMenu();
         }
@@ -42,8 +42,8 @@ public class UISelectedMenu : MonoBehaviour
 
     private void InitializeUnitMenu()
     {
-        SetTitle(gameUI.selectedUnit.unitName);
-        if (gameUI.selectedUnit.GetComponent<UnitBuilder>())
+        SetTitle(HexGameUI.selectedUnit.unitName);
+        if (HexGameUI.selectedUnit.GetComponent<UnitBuilder>())
         {
             for (int i = 0; i < listContent.childCount; i++)
             {
@@ -53,7 +53,7 @@ public class UISelectedMenu : MonoBehaviour
             for (int i = 0; i < buildingsMenu.buildingsCollection.prefabs.Length; i++)
             {
                 UIBuildingsIconItem buildingIcon = Instantiate(buildingIconPrefab);
-                buildingIcon.selectedMenu = this;
+                //buildingIcon.selectedMenu = this;
                 buildingIcon.buildingsMenu = null;
                 buildingIcon.SetFields(buildingsMenu.buildingsCollection.PickBuilding(i));
                 buildingIcon.transform.SetParent(listContent, false);
@@ -63,7 +63,7 @@ public class UISelectedMenu : MonoBehaviour
 
     private void InitializeBuildingMenu()
     {
-        SetTitle(gameUI.selectedBuilding.buildingName);
+        SetTitle(HexGameUI.selectedBuilding.buildingName);
     }
 
     private void SetTitle(string title)
@@ -74,20 +74,20 @@ public class UISelectedMenu : MonoBehaviour
     public IEnumerator PlaceBuilding(BuildingBaseClass building)
     {
         placeBuilding = true;
-        activeBuilder = gameUI.selectedUnit.GetComponent<UnitBuilder>();
+        activeBuilder = HexGameUI.selectedUnit.GetComponent<UnitBuilder>();
         BuildingBaseClass buildingLocal = Instantiate(building);
         Color c1, c2, c3;
 
         Material[] materialsArr = buildingLocal.GetComponentInChildren<MeshRenderer>().materials;
 
-        Color validBuildColor = new Color (0.75f, 0.75f, 0.75f);
-        Color invalidBuildColor = new Color (0.75f, 0.0f, 0.0f);
+        Color validBuildColor = new Color(0.75f, 0.75f, 0.75f);
+        Color invalidBuildColor = new Color(0.75f, 0.0f, 0.0f);
 
         c1 = materialsArr[0].color;
         c2 = materialsArr[1].color;
         c3 = materialsArr[2].color;
-                
-        while(placeBuilding)
+
+        while (placeBuilding)
         {
             if (gameUI.UpdateCurrentCell())
             {
@@ -112,10 +112,10 @@ public class UISelectedMenu : MonoBehaviour
                 }
                 yield return null;
             }
-            
+
             if (Input.GetMouseButtonDown(0) && gameUI.currentCell.IsValidBuildLocation)
             {
-                buildingLocal.transform.localScale = new Vector3 (0.0f, 0.0f, 0.0f);
+                buildingLocal.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
 
                 materialsArr[0].color = c1;
                 materialsArr[1].color = c2;
@@ -127,7 +127,7 @@ public class UISelectedMenu : MonoBehaviour
 
                 activeBuilder.BuildAtLocation(buildingLocal, gameUI.currentCell);
 
-                gameUI.selectedUnit = null;
+                HexGameUI.selectedUnit = null;
 
                 Close();
 

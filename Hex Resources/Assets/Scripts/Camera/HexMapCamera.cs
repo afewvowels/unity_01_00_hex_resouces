@@ -132,15 +132,15 @@ public class HexMapCamera : MonoBehaviour
         instance.transform.localRotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
-    private Vector3 WrapPosition (Vector3 position)
+    private Vector3 WrapPosition(Vector3 position)
     {
         float width = hexGrid.cellCountX * HexDefinition.innerDiameter;
-        while (position.x < 0.0f)
+        while (position.x < 50.0f)
         {
             position.x += width;
         }
 
-        while (position.x > width)
+        while (position.x > width - 50.0f)
         {
             position.x -= width;
         }
@@ -152,9 +152,10 @@ public class HexMapCamera : MonoBehaviour
         return position;
     }
 
-    public void CenterOnUnit(Vector3 position)
+    public void CenterOnUnit()
     {
         HexGrid grid = GameObject.FindGameObjectWithTag("hexgrid").GetComponent<HexGrid>();
-        instance.transform.position = new Vector3(position.x, grid.GetSizeZ() / 3.0f, position.z / 2.0f);
+        HexCell starterCell = grid.units[0].Location;
+        instance.transform.position = new Vector3(starterCell.transform.position.x, 0.0f, starterCell.transform.position.z);
     }
 }

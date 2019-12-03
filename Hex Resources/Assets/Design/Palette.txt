@@ -12,3 +12,24 @@ Dark Brown
 
 Reddish
 #A62C21
+
+Menu BG (Light Tan)
+#EDDDB4
+
+Menu Border (Dark Brown)
+#4D2E28
+
+Units Dark
+#794F1A
+
+Units Light
+#E79841
+
+Resources Blue
+#084AFF
+
+Units Dark (Desaturated)
+#7A5D1E
+
+Units Light (Desaturated)
+#E7BE42

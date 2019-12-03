@@ -4,9 +4,9 @@ using System.IO;
 
 public class HexMapEditor : MonoBehaviour
 {
-	public HexGrid hexGrid;
+    public HexGrid hexGrid;
 
-	public GameObject player;
+    public GameObject player;
     public GameObject unitsRoot;
 
     public int activeElevation;
@@ -49,7 +49,7 @@ public class HexMapEditor : MonoBehaviour
     }
 
     private void FixedUpdate()
-	{
+    {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             if (Input.GetMouseButton(0))
@@ -71,9 +71,9 @@ public class HexMapEditor : MonoBehaviour
             }
         }
         previousCell = null;
-	}
+    }
 
-    public void ShowGrid (bool visible)
+    public void ShowGrid(bool visible)
     {
         if (visible)
         {
@@ -100,12 +100,12 @@ public class HexMapEditor : MonoBehaviour
         return hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
     }
 
-	void HandleInput()
+    void HandleInput()
     {
         HexCell currentCell = GetCellUnderCursor();
 
         if (currentCell)
-		{
+        {
             if (previousCell && previousCell != currentCell)
             {
                 ValidateDrag(currentCell);
@@ -117,12 +117,12 @@ public class HexMapEditor : MonoBehaviour
             EditCells(currentCell);
 
             previousCell = currentCell;
-		}
+        }
         else
         {
             previousCell = null;
         }
-	}
+    }
 
     private void EditCells(HexCell center)
     {
@@ -148,7 +148,7 @@ public class HexMapEditor : MonoBehaviour
 
     private void EditCell(HexCell cell)
     {
-        if(cell)
+        if (cell)
         {
             if (activeTerrainTypeIndex >= 0)
             {
@@ -182,7 +182,7 @@ public class HexMapEditor : MonoBehaviour
 
             if (applyPlantLevel)
             {
-                cell.PlanetLevel = activePlantLevel;
+                cell.PlantLevel = activePlantLevel;
             }
 
             if (riverMode == OptionalToggle.No)
@@ -266,7 +266,7 @@ public class HexMapEditor : MonoBehaviour
         activeWaterLevel = (int)level;
     }
 
-    public void SetEditMode (bool toggle)
+    public void SetEditMode(bool toggle)
     {
         enabled = toggle;
     }
@@ -294,32 +294,32 @@ public class HexMapEditor : MonoBehaviour
         applyUrbanLevel = toggle;
     }
 
-    public void SetUrbanLevel (float level)
+    public void SetUrbanLevel(float level)
     {
         activeUrbanLevel = (int)level;
     }
 
-    public void SetApplyFarmLevel (bool toggle)
+    public void SetApplyFarmLevel(bool toggle)
     {
         applyFarmLevel = toggle;
     }
 
-    public void SetFarmLevel (float level)
+    public void SetFarmLevel(float level)
     {
         activeFarmLevel = (int)level;
     }
 
-    public void SetApplyPlantLevel (bool toggle)
+    public void SetApplyPlantLevel(bool toggle)
     {
         applyPlantLevel = toggle;
     }
 
-    public void SetPlantLevel (float level)
+    public void SetPlantLevel(float level)
     {
         activePlantLevel = (int)level;
     }
 
-    public void SetWalledMode (int mode)
+    public void SetWalledMode(int mode)
     {
         walledMode = (OptionalToggle)mode;
     }

@@ -21,6 +21,10 @@ TagManager:
   - selectedcanvas
   - secret
   - starterunit
+  - processing
+  - crystalstext
+  - garagemenu
+  - unitcanvas
   layers:
   - Default
   - TransparentFX

@@ -7,12 +7,14 @@ public class UIBuildingsIconItem : MonoBehaviour
 
     [SerializeField]
     private BuildingBaseClass buildingInfo;
-    public UISelectedMenu selectedMenu;
+    public HexGameUI hexGameUI;
     [SerializeField]
     private string thisBuildingName;
 
     [SerializeField]
     private int buildingID;
+
+    private BuildingHub buildingHub;
 
     //public string UnitName
     //{
@@ -38,22 +40,43 @@ public class UIBuildingsIconItem : MonoBehaviour
         }
     }
 
+    public BuildingHub HubBuilding
+    {
+        get
+        {
+            return buildingHub;
+        }
+        set
+        {
+            buildingHub = value;
+        }
+    }
+
     public void Select()
     {
-        if (buildingsMenu)
+        //if (buildingsMenu)
+        //{
+        //    buildingsMenu.SelectMenuItem(buildingInfo);
+        //}
+        //else if (hexGameUI)
+        //{
+        HexGameUI.placeBuilding = true;
+        StopAllCoroutines();
+        //StartCoroutine(hexGameUI.PlaceBuilding(buildingInfo));
+
+        if (buildingInfo.GetComponent<BuildingHub>())
         {
-            buildingsMenu.SelectMenuItem(buildingInfo);
-        }
-        else if (selectedMenu)
-        {
-            Debug.Log("place building initiated");
-            StopAllCoroutines();
-            StartCoroutine(selectedMenu.PlaceBuilding(buildingInfo));
+            StartCoroutine(hexGameUI.PlaceHubBuilding(buildingInfo));
         }
         else
         {
-            Debug.Log("No menu associated with this button");
+            StartCoroutine(hexGameUI.PlaceHubAddOnBuilding(HubBuilding, buildingInfo));
         }
+        //}
+        //else
+        //{
+        //    Debug.Log("No menu associated with this button");
+        //}
     }
 
     public void SetFields(BuildingBaseClass building)
@@ -62,5 +85,18 @@ public class UIBuildingsIconItem : MonoBehaviour
         thisBuildingName = building.buildingName;
         transform.GetChild(0).GetComponent<Text>().text = thisBuildingName;
         buildingID = building.BuildingID;
+    }
+
+    //public void SetFields(BuildingHub buildingHub)
+    //{
+    //    HubBuilding = buildingHub;
+    //    thisBuildingName = HubBuilding.buildingName;
+    //    transform.GetChild(0).GetComponent<Text>().text = thisBuildingName;
+    //    buildingID = buildingHub.BuildingID;
+    //}
+
+    public void Die()
+    {
+        Destroy(gameObject);
     }
 }

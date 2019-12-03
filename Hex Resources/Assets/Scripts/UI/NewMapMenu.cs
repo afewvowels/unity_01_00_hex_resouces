@@ -14,14 +14,15 @@ public class NewMapMenu : MonoBehaviour
 
     public void Open()
     {
-        gameObject.SetActive(true);
         HexMapCamera.Locked = true;
+        gameObject.SetActive(true);
     }
 
     public void Close()
     {
-        gameObject.SetActive(false);
         HexMapCamera.Locked = false;
+        //HexGameUI.menuOpen = false;
+        gameObject.SetActive(false);
     }
 
     private void CreateMap(int x, int z)
@@ -53,12 +54,12 @@ public class NewMapMenu : MonoBehaviour
         CreateMap(80, 60);
     }
 
-    public void ToggleMapGeneration (bool toggle)
+    public void ToggleMapGeneration(bool toggle)
     {
         generateMaps = toggle;
     }
 
-    public void ToggleWrapping (bool toggle)
+    public void ToggleWrapping(bool toggle)
     {
         wrapping = toggle;
     }

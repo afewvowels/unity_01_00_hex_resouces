@@ -11,7 +11,11 @@ public class HexGridChunk : MonoBehaviour
 
     public ResourcesManager resources;
 
+    public Text cellLabelPrefab;
+
     Canvas gridCanvas;
+
+    public Canvas chunkCanvas;
 
     static Color weights1 = new Color(1.0f, 0.0f, 0.0f);
     static Color weights2 = new Color(0.0f, 1.0f, 0.0f);
@@ -19,7 +23,7 @@ public class HexGridChunk : MonoBehaviour
 
     private void Awake()
     {
-        gridCanvas = GetComponentInChildren<Canvas>();
+        //gridCanvas = GetComponentInChildren<Canvas>();
         hexCells = new HexCell[HexDefinition.chunkSizeX * HexDefinition.chunkSizeZ];
     }
 
@@ -36,14 +40,29 @@ public class HexGridChunk : MonoBehaviour
 
     public void AddCell(int index, HexCell cell)
     {
-        hexCells[index]= cell;
+        hexCells[index] = cell;
         cell.chunk = this;
         cell.transform.SetParent(transform, false);
     }
 
+    public void AddLabel(HexCell cell)
+    {
+        Text label = Instantiate<Text>(cellLabelPrefab);
+        label.rectTransform.SetParent(chunkCanvas.transform, false);
+        label.rectTransform.anchoredPosition =
+            new Vector2(cell.Position.x, cell.Position.z);
+
+        cell.uiRect = label.rectTransform;
+
+        label.text = null;
+
+        label.tag = "label";
+    }
+
     public void ShowUI(bool visible)
     {
-        gridCanvas.gameObject.SetActive(visible);
+        //gridCanvas.gameObject.SetActive(visible);
+        chunkCanvas.gameObject.SetActive(visible);
     }
 
     public void Refresh()
@@ -281,7 +300,7 @@ public class HexGridChunk : MonoBehaviour
         }
     }
 
-    private void TriangulateEstuary (EdgeVertices e1, EdgeVertices e2, bool incomingRiver, Vector3 indices)
+    private void TriangulateEstuary(EdgeVertices e1, EdgeVertices e2, bool incomingRiver, Vector3 indices)
     {
         waterShore.AddTriangle(e2.v1, e1.v2, e1.v1);
         waterShore.AddTriangle(e2.v5, e1.v5, e1.v4);
@@ -309,7 +328,7 @@ public class HexGridChunk : MonoBehaviour
         estuaries.AddTriangleCellData(indices, weights1, weights2, weights2);
         estuaries.AddQuadCellData(indices, weights1, weights2);
 
-        if(incomingRiver)
+        if (incomingRiver)
         {
             estuaries.AddQuadUV2(
                 new Vector2(1.5f, 1.0f), new Vector2(0.7f, 1.15f),
@@ -791,8 +810,8 @@ public class HexGridChunk : MonoBehaviour
         Color boundaryWeights = Color.Lerp(weights1, weights2, b);
         Vector3 indices;
         indices.x = beginCell.Index;
-        indices.y = beginCell.Index;
-        indices.z = beginCell.Index;
+        indices.y = leftCell.Index;
+        indices.z = rightCell.Index;
 
         TriangulateBoundaryTriangle(right, weights3, begin, weights1, boundary, boundaryWeights, indices);
 
@@ -880,7 +899,7 @@ public class HexGridChunk : MonoBehaviour
         }
     }
 
-    private Vector2 GetRoadInterpolators (HexDirection direction, HexCell cell)
+    private Vector2 GetRoadInterpolators(HexDirection direction, HexCell cell)
     {
         Vector2 interpolators;
         if (cell.HasRoadThroughEdge(direction))

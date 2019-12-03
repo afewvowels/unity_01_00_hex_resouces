@@ -26,7 +26,7 @@ public class HexFeatureManager : MonoBehaviour
         walls.Apply();
     }
 
-    public void AddFeature (HexCell cell, Vector3 position)
+    public void AddFeature(HexCell cell, Vector3 position)
     {
         if (cell.IsSpecial)
         {
@@ -50,7 +50,7 @@ public class HexFeatureManager : MonoBehaviour
             prefab = otherPrefab;
             usedHash = hash.b;
         }
-        otherPrefab = PickPrefab(plantCollections, cell.PlanetLevel, hash.c, hash.d);
+        otherPrefab = PickPrefab(plantCollections, cell.PlantLevel, hash.c, hash.d);
         if (prefab)
         {
             if (otherPrefab && hash.c < usedHash)
@@ -73,7 +73,7 @@ public class HexFeatureManager : MonoBehaviour
         instance.SetParent(container, false);
     }
 
-    public void AddSpecialFeature (HexCell cell, Vector3 position)
+    public void AddSpecialFeature(HexCell cell, Vector3 position)
     {
         Transform instance = Instantiate(special[cell.SpecialIndex - 1]);
         instance.localPosition = HexDefinition.Displace(position);

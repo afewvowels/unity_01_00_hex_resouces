@@ -8,7 +8,7 @@
         _Specular ("Specular", Color) = (0.2, 0.2, 0.2)
         _BackgroundColor ("Background Color", Color) = (0, 0, 0)
         [NoScaleOffset] _HeightMap ("Heights", 2D) = "grey" {}
-        _BackgroundTex ("Texture", 2D) = "white" {}
+        //_BackgroundTex ("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -34,7 +34,7 @@
             float2 uv_MainTex;
             float2 riverUV;
             float3 worldPos;
-            float4 screenPos;
+            //float4 screenPos;
             float2 visibility;
             float2 uv_HeightMap;
         };
@@ -46,8 +46,8 @@
         fixed4 _Color;
         half3 _BackgroundColor;
         
-        sampler2D _BackgroundTex;
-        float4 _BackgroundTex_ST;
+        //sampler2D _BackgroundTex;
+        //float4 _BackgroundTex_ST;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -93,18 +93,18 @@
             fixed4 c = saturate(_Color + water);
             
 
-            float2 bgTexCoordinates = IN.screenPos.xy / IN.screenPos.w;
-            float aspect = _ScreenParams.x / _ScreenParams.y;
-            bgTexCoordinates.x *= aspect;
-            bgTexCoordinates = TRANSFORM_TEX(bgTexCoordinates, _BackgroundTex);
-            fixed4 bgCol = tex2D(_BackgroundTex, bgTexCoordinates);
-            o.Emission = bgCol * (c.a - explored);
+            //float2 bgTexCoordinates = IN.screenPos.xy / IN.screenPos.w;
+            //float aspect = _ScreenParams.x / _ScreenParams.y;
+            //bgTexCoordinates.x *= aspect;
+            //bgTexCoordinates = TRANSFORM_TEX(bgTexCoordinates, _BackgroundTex);
+            //fixed4 bgCol = tex2D(_BackgroundTex, bgTexCoordinates);
+            //o.Emission = bgCol * (c.a - explored);
             
-            o.Albedo = c.rgb * IN.visibility.x;
+            o.Albedo = c.rgb * (IN.visibility.x * explored);
             o.Specular = _Specular * explored;
             o.Smoothness = _Glossiness;
             o.Occlusion = explored;
-            o.Alpha = c.a;
+            o.Alpha = c.a * (IN.visibility.x * explored);
         }
         ENDCG
     }

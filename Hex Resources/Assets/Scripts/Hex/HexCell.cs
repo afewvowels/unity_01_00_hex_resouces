@@ -13,17 +13,20 @@ public class HexCell : MonoBehaviour
 
     private int distance;
 
-	[SerializeField]
-	private int parentCellID;
+    [SerializeField]
+    private int parentCellID;
 
-	[SerializeField]
-	int cellID;
+    [SerializeField]
+    int cellID;
 
-	[SerializeField]
-	HexCell[] neighbors = null;
+    [SerializeField]
+    HexCell[] neighbors = null;
 
-	[SerializeField]
-	private int elevation = int.MinValue;
+    public BuildingHarmonicResonator resonator;
+    public BuildingSurveyBeacon beacon;
+
+    [SerializeField]
+    private int elevation = int.MinValue;
 
     [SerializeField]
     private bool[] roads = null;
@@ -75,6 +78,7 @@ public class HexCell : MonoBehaviour
         set
         {
             building = value;
+            PlantLevel = 0;
         }
     }
 
@@ -113,7 +117,7 @@ public class HexCell : MonoBehaviour
     {
         get
         {
-            return Resource != null;
+            return ResourceType != int.MinValue;
         }
     }
 
@@ -231,7 +235,7 @@ public class HexCell : MonoBehaviour
         }
     }
 
-    public int PlanetLevel
+    public int PlantLevel
     {
         get
         {
@@ -267,20 +271,20 @@ public class HexCell : MonoBehaviour
         }
     }
 
-	public int Elevation
-	{
-		get
-		{
-			return elevation;
-		}
-		set
-		{
+    public int Elevation
+    {
+        get
+        {
+            return elevation;
+        }
+        set
+        {
             if (elevation == value)
             {
                 return;
             }
             int originalViewElevation = ViewElevation;
-			elevation = value;
+            elevation = value;
             if (ViewElevation != originalViewElevation)
             {
                 ShaderData.ViewElevationChanged();
@@ -299,8 +303,8 @@ public class HexCell : MonoBehaviour
             }
 
             Refresh();
-		}
-	}
+        }
+    }
 
     public int ViewElevation
     {
@@ -326,13 +330,13 @@ public class HexCell : MonoBehaviour
         }
     }
 
-	public Vector3 Position
-	{
-		get
-		{
-			return transform.localPosition;
-		}
-	}
+    public Vector3 Position
+    {
+        get
+        {
+            return transform.localPosition;
+        }
+    }
 
     public bool HasIncomingRiver
     {
@@ -475,61 +479,76 @@ public class HexCell : MonoBehaviour
         if (uiRect)
         {
             Vector3 uiPosition = uiRect.localPosition;
-            uiPosition.z = - position.y;
+            uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
         }
 
     }
 
-	public HexCell GetNeighbor(HexDirection direction)
-	{
-		return neighbors[(int)direction];
-	}
+    public HexCell GetNeighbor(HexDirection direction)
+    {
+        return neighbors[(int)direction];
+    }
 
-	public HexCell[] GetNeighbors()
-	{
-		return neighbors;
-	}
+    public HexCell[] GetNeighbors()
+    {
+        return neighbors;
+    }
 
-	public void SetNeighbor(HexDirection direction, HexCell cell)
-	{
-		neighbors[(int)direction] = cell;
-		cell.neighbors[(int)direction.Opposite()] = this;
-	}
+    public bool IsNeighbor(HexCell cell)
+    {
+        bool isNeighbor = false;
 
-	public void SetCellID(int id)
-	{
-		cellID = id;
-	}
+        for (int i = 0; i < neighbors.Length; i++)
+        {
+            if (neighbors[i] == cell)
+            {
+                isNeighbor = true;
+            }
+        }
 
-	public int GetCellID()
-	{
-		return cellID;
-	}
+        return isNeighbor;
+    }
 
-	public void SetParentCellID(int id)
-	{
-		parentCellID = id;
-	}
+    public void SetNeighbor(HexDirection direction, HexCell cell)
+    {
+        neighbors[(int)direction] = cell;
+        cell.neighbors[(int)direction.Opposite()] = this;
+    }
 
-	public int GetParentCellID()
-	{
-		return parentCellID;
-	}
+    public void SetCellID(int id)
+    {
+        cellID = id;
+    }
 
-	public HexDefinition.HexEdgeType GetEdgeType(HexDirection direction)
-	{
-		return HexDefinition.GetEdgeType(elevation, neighbors[(int)direction].elevation);
-	}
+    public int GetCellID()
+    {
+        return cellID;
+    }
 
-	public HexDefinition.HexEdgeType GetEdgeType(HexCell otherCell)
-	{
-		return HexDefinition.GetEdgeType(elevation, otherCell.elevation);
-	}
+    public void SetParentCellID(int id)
+    {
+        parentCellID = id;
+    }
+
+    public int GetParentCellID()
+    {
+        return parentCellID;
+    }
+
+    public HexDefinition.HexEdgeType GetEdgeType(HexDirection direction)
+    {
+        return HexDefinition.GetEdgeType(elevation, neighbors[(int)direction].elevation);
+    }
+
+    public HexDefinition.HexEdgeType GetEdgeType(HexCell otherCell)
+    {
+        return HexDefinition.GetEdgeType(elevation, otherCell.elevation);
+    }
 
     private void Refresh()
     {
-        if(chunk)
+        if (chunk)
         {
             chunk.Refresh();
             for (int i = 0; i < neighbors.Length; i++)
@@ -628,7 +647,7 @@ public class HexCell : MonoBehaviour
             hasOutgoingRiver && outgoingRiverDirection == direction;
     }
 
-    public bool HasRoadThroughEdge (HexDirection direction)
+    public bool HasRoadThroughEdge(HexDirection direction)
     {
         return roads[(int)direction];
     }
@@ -662,13 +681,13 @@ public class HexCell : MonoBehaviour
         RefreshSelfOnly();
     }
 
-    public int GetElevationDifference (HexDirection direction)
+    public int GetElevationDifference(HexDirection direction)
     {
         int difference = elevation - GetNeighbor(direction).elevation;
         return difference >= 0 ? difference : -difference;
     }
 
-    private bool IsValidRiverDestination (HexCell neighbor)
+    private bool IsValidRiverDestination(HexCell neighbor)
     {
         return neighbor && (
             elevation >= neighbor.elevation || waterLevel == neighbor.elevation);
@@ -676,13 +695,13 @@ public class HexCell : MonoBehaviour
 
     private void ValidateRivers()
     {
-        if(
+        if (
             hasOutgoingRiver &&
             !IsValidRiverDestination(GetNeighbor(outgoingRiverDirection)))
         {
             RemoveOutgoingRiver();
         }
-        if(
+        if (
             hasIncomingRiver &&
             !GetNeighbor(incomingRiverDirection).IsValidRiverDestination(this)
             )
@@ -691,7 +710,7 @@ public class HexCell : MonoBehaviour
         }
     }
 
-    public void Save (BinaryWriter writer)
+    public void Save(BinaryWriter writer)
     {
         writer.Write((byte)terrainTypeIndex);
         writer.Write((byte)(elevation + 127));
@@ -733,7 +752,7 @@ public class HexCell : MonoBehaviour
         writer.Write(IsExplored);
     }
 
-    public void Load (BinaryReader reader, int header)
+    public void Load(BinaryReader reader, int header)
     {
         terrainTypeIndex = reader.ReadByte();
         ShaderData.RefreshTerrain(this);
@@ -783,7 +802,7 @@ public class HexCell : MonoBehaviour
         ShaderData.RefreshVisibility(this);
     }
 
-    public void SetLabel (string text)
+    public void SetLabel(string text)
     {
         UnityEngine.UI.Text label = uiRect.GetComponent<Text>();
         label.text = text;
@@ -819,6 +838,10 @@ public class HexCell : MonoBehaviour
         {
             ShaderData.RefreshVisibility(this);
         }
+        if (visibility < 0)
+        {
+            visibility = 0;
+        }
     }
 
     public void ResetVisibility()
@@ -830,7 +853,7 @@ public class HexCell : MonoBehaviour
         }
     }
 
-    public void SetMapData (float data)
+    public void SetMapData(float data)
     {
         ShaderData.SetMapData(this, data);
     }
