@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -236,7 +237,14 @@ public class HexUnit : ObjectBaseClass
         location.Unit = this;
         pathToTravel = path;
         StopAllCoroutines();
-        StartCoroutine(TravelPath(UnitSpeed));
+        try
+        {
+            StartCoroutine(TravelPath(UnitSpeed));
+        }
+        catch
+        {
+            Debug.Log("error starting hexunit travelpath coroutine");
+        }
     }
 
     protected virtual IEnumerator TravelPath(float speed = 3.0f)
@@ -332,7 +340,7 @@ public class HexUnit : ObjectBaseClass
 
         float angle = Quaternion.Angle(fromRotation, toRotation);
 
-        if (angle > 0.0f)
+        if (Mathf.Abs(angle) > 1.0f)
         {
             float speed = rotationSpeed / angle;
 
@@ -347,7 +355,7 @@ public class HexUnit : ObjectBaseClass
             }
         }
 
-        transform.LookAt(point);
+        // transform.LookAt(point);
         orientation = transform.localRotation.eulerAngles.y;
     }
 
@@ -364,7 +372,14 @@ public class HexUnit : ObjectBaseClass
     public void InitializeSpawn(HexCell from, HexCell to)
     {
         StopAllCoroutines();
-        StartCoroutine(SpawnUnitFromGarage(from, to));
+        try
+        {
+            StartCoroutine(SpawnUnitFromGarage(from, to));
+        }
+        catch
+        {
+            Debug.Log("error doing HexUnit spawn from garage coroutine");
+        }
     }
 
     public virtual IEnumerator SpawnUnitFromGarage(HexCell from, HexCell to)

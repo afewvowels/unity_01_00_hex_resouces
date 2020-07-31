@@ -68,6 +68,8 @@ public class HexGrid : MonoBehaviour
 
     public List<HexCell> adjacentCells = new List<HexCell>();
 
+    public bool isValidStartPosition;
+
     public bool HasPath
     {
         get
@@ -831,6 +833,63 @@ public class HexGrid : MonoBehaviour
         for (int i = 0; i < cells.Length; i++)
         {
             cells[i].SearchPhase = 0;
+        }
+    }
+
+    public void ValidateStartPosition(HexCell origin)
+    {
+        int cellCountThreshold = 25;
+        Queue<HexCell> frontier = new Queue<HexCell>();
+        Queue<HexCell> visitableCells = new Queue<HexCell>();
+        Queue<HexCell> cellsWithResources = new Queue<HexCell>();
+
+        for (int i = 0; i < cells.Length; i++)
+        {
+            cells[i].Distance = int.MaxValue;
+        }
+
+        origin.Distance = 0;
+        frontier.Enqueue(origin);
+        visitableCells.Enqueue(origin);
+        while (frontier.Count > 0)
+        {
+            HexCell current = frontier.Dequeue();
+            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+            {
+                HexCell neighbor = current.GetNeighbor(d);
+                if (neighbor == null || neighbor.Distance != int.MaxValue)
+                {
+                    continue;
+                }
+                if (neighbor.IsUnderwater)
+                {
+                    continue;
+                }
+                if (current.GetEdgeType(neighbor) == HexDefinition.HexEdgeType.Cliff)
+                {
+                    continue;
+                }
+
+                neighbor.Distance = current.Distance + 1;
+                frontier.Enqueue(neighbor);
+                if (!visitableCells.Contains(neighbor))
+                {
+                    visitableCells.Enqueue(neighbor);
+                }
+                if (neighbor.HasResource && !cellsWithResources.Contains(neighbor))
+                {
+                    cellsWithResources.Enqueue(neighbor);
+                }
+            }
+        }
+
+        if (visitableCells.Count >= cellCountThreshold && cellsWithResources.Count > 2)
+        {
+            isValidStartPosition = true;
+        }
+        else
+        {
+            isValidStartPosition = false;
         }
     }
 }

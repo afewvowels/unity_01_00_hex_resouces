@@ -9,77 +9,84 @@ public class ResourceMinerals : ResourceBaseClass
 
     protected override void ResizeResourceBasedOnAmount()
     {
-        if (ResourceAmount >= maxResourceAmount)
+        try
         {
-            for (int i = 0; i < 5; i++)
+            if (ResourceAmount >= maxResourceAmount)
             {
-                crystals[i].SetActive(true);
-                depletedCrystals[i].SetActive(false);
+                for (int i = 0; i < 5; i++)
+                {
+                    crystals[i].SetActive(true);
+                    depletedCrystals[i].SetActive(false);
+                }
             }
-        }
-        else if (ResourceAmount > maxResourceAmount * 0.8f)
-        {
-            for (int i = 0; i < 4; i++)
+            else if (ResourceAmount > maxResourceAmount * 0.8f)
             {
-                crystals[i].SetActive(true);
-                depletedCrystals[i].SetActive(false);
-            }
+                for (int i = 0; i < 4; i++)
+                {
+                    crystals[i].SetActive(true);
+                    depletedCrystals[i].SetActive(false);
+                }
 
-            for (int i = 4; i >= 4; i--)
-            {
-                crystals[i].SetActive(false);
-                depletedCrystals[i].SetActive(true);
+                for (int i = 4; i >= 4; i--)
+                {
+                    crystals[i].SetActive(false);
+                    depletedCrystals[i].SetActive(true);
+                }
             }
-        }
-        else if (ResourceAmount > maxResourceAmount * 0.6f)
-        {
-            for (int i = 0; i < 3; i++)
+            else if (ResourceAmount > maxResourceAmount * 0.6f)
             {
-                crystals[i].SetActive(true);
-                depletedCrystals[i].SetActive(false);
-            }
+                for (int i = 0; i < 3; i++)
+                {
+                    crystals[i].SetActive(true);
+                    depletedCrystals[i].SetActive(false);
+                }
 
-            for (int i = 4; i >= 3; i--)
-            {
-                crystals[i].SetActive(false);
-                depletedCrystals[i].SetActive(true);
+                for (int i = 4; i >= 3; i--)
+                {
+                    crystals[i].SetActive(false);
+                    depletedCrystals[i].SetActive(true);
+                }
             }
-        }
-        else if (ResourceAmount > maxResourceAmount * 0.4f)
-        {
-            for (int i = 0; i < 2; i++)
+            else if (ResourceAmount > maxResourceAmount * 0.4f)
             {
-                crystals[i].SetActive(true);
-                depletedCrystals[i].SetActive(false);
-            }
+                for (int i = 0; i < 2; i++)
+                {
+                    crystals[i].SetActive(true);
+                    depletedCrystals[i].SetActive(false);
+                }
 
-            for (int i = 4; i >= 2; i--)
-            {
-                crystals[i].SetActive(false);
-                depletedCrystals[i].SetActive(true);
+                for (int i = 4; i >= 2; i--)
+                {
+                    crystals[i].SetActive(false);
+                    depletedCrystals[i].SetActive(true);
+                }
             }
-        }
-        else if (ResourceAmount > maxResourceAmount * 0.2f)
-        {
-            for (int i = 0; i < 1; i++)
+            else if (ResourceAmount > maxResourceAmount * 0.2f)
             {
-                crystals[i].SetActive(true);
-                depletedCrystals[i].SetActive(false);
-            }
+                for (int i = 0; i < 1; i++)
+                {
+                    crystals[i].SetActive(true);
+                    depletedCrystals[i].SetActive(false);
+                }
 
-            for (int i = 4; i >= 1; i--)
+                for (int i = 4; i >= 1; i--)
+                {
+                    crystals[i].SetActive(false);
+                    depletedCrystals[i].SetActive(true);
+                }
+            }
+            else if (ResourceAmount <= 0)
             {
-                crystals[i].SetActive(false);
-                depletedCrystals[i].SetActive(true);
+                for (int i = 4; i >= 0; i--)
+                {
+                    crystals[i].SetActive(false);
+                    depletedCrystals[i].SetActive(true);
+                }
             }
         }
-        else if (ResourceAmount == 0)
+        catch
         {
-            for (int i = 4; i >= 0; i--)
-            {
-                crystals[i].SetActive(false);
-                depletedCrystals[i].SetActive(true);
-            }
+            Debug.Log("error doing resource mesh status update");
         }
     }
 }

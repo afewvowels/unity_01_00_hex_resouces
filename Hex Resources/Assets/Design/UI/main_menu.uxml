@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <Style src="main_menu.uss" />
+        <ui:VisualElement style="width: 200px; margin-left: 50px; justify-content: center; align-items: center;">
+            <ui:Button text="Button" class="main-menu-button" />
+            <ui:Button text="Button" class="main-menu-button" />
+            <ui:Button text="Button" class="main-menu-button" />
+        </ui:VisualElement>
+        <ui:VisualElement style="width: 200px; justify-content: center; align-items: center;">
+            <ui:Label text="Resources" class="title" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;" />
+    </ui:VisualElement>
+</ui:UXML>

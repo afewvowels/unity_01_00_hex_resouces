@@ -31,6 +31,8 @@ public class ResourceBaseClass : MonoBehaviour
 
     private GameObject harvestParticles;
 
+    public bool isRotated;
+
     public int ResourceAmount
     {
         get
@@ -39,7 +41,7 @@ public class ResourceBaseClass : MonoBehaviour
         }
         set
         {
-            if (value > 0 || value < maxResourceAmount)
+            if (value > 0 && value < maxResourceAmount)
             {
                 resourceAmount = value;
             }
@@ -56,8 +58,23 @@ public class ResourceBaseClass : MonoBehaviour
                 Debug.Log("error assigning ResourceAmount");
             }
             StopAllCoroutines();
-            StartCoroutine(RefreshResources());
-            ResizeResourceBasedOnAmount();
+            try
+            {
+                StartCoroutine(RefreshResources());
+            }
+            catch
+            {
+                Debug.Log("error starting refresh resources coroutine");
+            }
+
+            try
+            {
+                ResizeResourceBasedOnAmount();
+            }
+            catch
+            {
+                Debug.Log("error doing resize resource");
+            }
         }
     }
 
@@ -159,7 +176,14 @@ public class ResourceBaseClass : MonoBehaviour
 
     public void EndHarvest()
     {
-        Destroy(harvestParticles);
+        try
+        {
+            Destroy(harvestParticles);
+        }
+        catch
+        {
+            Debug.Log("error destroying harvest particles");
+        }
     }
 
     private IEnumerator RefreshResources()
@@ -203,7 +227,6 @@ public class ResourceBaseClass : MonoBehaviour
         {
             scaleFactor = 0.5f;
         }
-
 
         transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
     }

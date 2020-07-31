@@ -66,10 +66,17 @@ public class UIGarageUnitInProduction : MonoBehaviour
 
     public void BuildUnitCoroutine()
     {
-        HexUnit unit = Instantiate(unitToBuild);
-        grid.AddUnit(unit, buildingGarage.buildDestination, buildingGarage.orientation);
-        unit.InitializeSpawn(buildingGarage.Location, buildingGarage.buildDestination);
-        Destroy(this);
+        try
+        {
+            HexUnit unit = Instantiate(unitToBuild);
+            grid.AddUnit(unit, buildingGarage.buildDestination, buildingGarage.orientation);
+            unit.InitializeSpawn(buildingGarage.Location, buildingGarage.buildDestination);
+            Destroy(this);
+        }
+        catch
+        {
+            Debug.Log("error doing unit build from garage");
+        }
     }
 
     public float GetProgress()

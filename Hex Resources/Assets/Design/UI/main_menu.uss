@@ -1,0 +1,27 @@
+.main-menu-button {
+    width: 120px;
+    height: 40px;
+    margin-bottom: 20px;
+    -unity-font: url('/Assets/Design/Alata-Regular.ttf');
+    color: rgb(122, 93, 30);
+    -unity-text-align: middle-center;
+    background-color: rgba(231, 190, 66, 255);
+    border-left-color: rgba(122, 93, 30, 255);
+    border-right-color: rgba(122, 93, 30, 255);
+    border-top-color: rgba(122, 93, 30, 255);
+    border-bottom-color: rgba(122, 93, 30, 255);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+}
+
+.title {
+    background-color: rgba(122, 93, 30, 255);
+    font-size: 36px;
+    -unity-font: url('/Assets/Design/Alata-Regular.ttf');
+}

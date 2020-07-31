@@ -21,7 +21,7 @@ public class NewMapMenu : MonoBehaviour
     public void Close()
     {
         HexMapCamera.Locked = false;
-        //HexGameUI.menuOpen = false;
+        HexGameUI.menuOpen = false;
         gameObject.SetActive(false);
     }
 
